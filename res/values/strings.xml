@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Polite Droid</string>
+    <string name="options_enabled">Enabled</string>
+    <string name="options_enabled_summary">Mute sound</string>
+</resources>
