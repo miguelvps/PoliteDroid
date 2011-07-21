@@ -1,6 +1,5 @@
 package com.pkg;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 
 import android.app.AlarmManager;
@@ -14,6 +13,7 @@ import android.preference.PreferenceManager;
 import android.widget.Toast;
 
 import com.pkg.Calendar.Event;
+import com.pkg.Calendar.EventCursor;
 
 public class CalendarUpdate extends BroadcastReceiver {
 
@@ -38,12 +38,12 @@ public class CalendarUpdate extends BroadcastReceiver {
 
         String selection;
         String[] selectionArgs = { nows, nows };
-        ArrayList<Event> events;
+        EventCursor events;
 
         // mute | unmute
         selection = "dtstart < ? and dtend > ?";
         events = Event.getEvents(context, selection, selectionArgs, null);
-        if (events.size() > 0) {
+        if (events.moveToNext()) {
             // mute
             if (!sp.getBoolean("isMute", false)) {
                 int ringerMode = audio.getRingerMode();
@@ -62,14 +62,14 @@ public class CalendarUpdate extends BroadcastReceiver {
         selectionArgs[1] = Long.toString(then);
         selection = "dtstart > ? and dtstart < ?";
         events = Event.getEvents(context, selection, selectionArgs, "dtstart");
-        if (events.size() > 0) {
-            long next = events.get(0).mStart;
+        if (events.moveToNext()) {
+            long next = events.getEvent().mStart;
             then = next < then ? next : then;
         }
         selection = "dtend > ? and dtend < ?";
         events = Event.getEvents(context, selection, selectionArgs, "dtend");
-        if (events.size() > 0) {
-            long next = events.get(0).mStart;
+        if (events.moveToNext()) {
+            long next = events.getEvent().mStart;
             then = next < then ? next : then;
         }
 
