@@ -1,5 +1,7 @@
 package com.pkg.Calendar;
 
+import java.lang.reflect.Field;
+
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -7,15 +9,27 @@ import android.net.Uri;
 public class Event {
 
     private static final String BASE_EVENTS_URI = Calendar.getBaseCalendarUri() + "/events";
+    private static final Uri CONTENT_URI = getUri();
 
     public static final String ID = "_id";
     public static final String DTSTART = "dtstart";
     public static final String DTEND = "dtend";
 
+    private static Uri getUri() {
+        try {
+            Class<?> calendarEventsProviderClass = Class.forName("android.provider.Calendar.Events");
+            Field uriField = calendarEventsProviderClass.getField("CONTENT_URI");
+            Uri eventsUri = (Uri) uriField.get(null);
+            return eventsUri;
+        }
+        catch (Exception e) {
+            return Uri.parse(BASE_EVENTS_URI);
+        }
+    }
+
     public static EventCursor getEvents(Context context, String selection, String[] selectionArgs, String sortOrder) {
-        Uri events_uri = Uri.parse(BASE_EVENTS_URI);
         String[] projection = new String[] { Event.ID, Event.DTSTART, Event.DTEND};
-        Cursor cursor = context.getContentResolver().query(events_uri, projection, selection, selectionArgs, sortOrder);
+        Cursor cursor = context.getContentResolver().query(CONTENT_URI, projection, selection, selectionArgs, sortOrder);
         return new EventCursor(cursor);
     }
 
