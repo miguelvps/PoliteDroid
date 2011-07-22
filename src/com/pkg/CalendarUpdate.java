@@ -1,5 +1,6 @@
 package com.pkg;
 
+import java.util.Arrays;
 import java.util.Calendar;
 
 import android.app.AlarmManager;
@@ -14,6 +15,8 @@ import android.widget.Toast;
 
 import com.pkg.Calendar.Event;
 import com.pkg.Calendar.EventCursor;
+import com.pkg.android.preference.ListPreferenceMultiSelect;
+import com.pkg.util.StringUtil;
 
 public class CalendarUpdate extends BroadcastReceiver {
 
@@ -36,12 +39,18 @@ public class CalendarUpdate extends BroadcastReceiver {
         calendar.add(Calendar.MINUTE, 15); // check calendar every 15m by default
         long then = calendar.getTimeInMillis();
 
+        String calendar_filter = "";
+        String[] calendars = ListPreferenceMultiSelect.parseStoredValue(sp.getString("options_calendars", ""));
+        if (calendars != null) {
+            calendar_filter = " and calendar_id in (" + StringUtil.join(Arrays.asList(calendars), ", ") + ")";
+        }
+
         String selection;
         String[] selectionArgs = { nows, nows };
         EventCursor events;
 
         // mute | unmute
-        selection = "dtstart < ? and dtend > ?";
+        selection = "dtstart < ? and dtend > ?" + calendar_filter;
         events = Event.getEvents(context, selection, selectionArgs, null);
         if (events.moveToNext()) {
             // mute
@@ -60,13 +69,13 @@ public class CalendarUpdate extends BroadcastReceiver {
 
         // find next event start or end
         selectionArgs[1] = Long.toString(then);
-        selection = "dtstart > ? and dtstart < ?";
+        selection = "dtstart > ? and dtstart < ?" + calendar_filter;
         events = Event.getEvents(context, selection, selectionArgs, "dtstart");
         if (events.moveToNext()) {
             long next = events.getEvent().mStart;
             then = next < then ? next : then;
         }
-        selection = "dtend > ? and dtend < ?";
+        selection = "dtend > ? and dtend < ?" + calendar_filter;
         events = Event.getEvents(context, selection, selectionArgs, "dtend");
         if (events.moveToNext()) {
             long next = events.getEvent().mStart;

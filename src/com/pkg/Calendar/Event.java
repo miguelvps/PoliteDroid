@@ -14,6 +14,7 @@ public class Event {
     public static final String ID = "_id";
     public static final String DTSTART = "dtstart";
     public static final String DTEND = "dtend";
+    public static final String CALENDAR_ID = "calendar_id";
 
     private static Uri getUri() {
         try {
@@ -28,7 +29,7 @@ public class Event {
     }
 
     public static EventCursor getEvents(Context context, String selection, String[] selectionArgs, String sortOrder) {
-        String[] projection = new String[] { Event.ID, Event.DTSTART, Event.DTEND};
+        String[] projection = new String[] { Event.ID, Event.CALENDAR_ID, Event.DTSTART, Event.DTEND };
         Cursor cursor = context.getContentResolver().query(CONTENT_URI, projection, selection, selectionArgs, sortOrder);
         return new EventCursor(cursor);
     }
@@ -42,11 +43,13 @@ public class Event {
 
 
     public Long mId;
+    public Long mCalendarId;
     public Long mStart;
     public Long mEnd;
 
-    public Event(Long id, Long dtstart, Long dtend) {
+    public Event(Long id, Long calendarId, Long dtstart, Long dtend) {
         this.mId = id;
+        this.mCalendarId = calendarId;
         this.mStart = dtstart;
         this.mEnd = dtend;
     }

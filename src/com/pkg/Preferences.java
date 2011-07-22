@@ -20,6 +20,7 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
         super.onCreate(savedInstanceState);
 
         addPreferencesFromResource(R.xml.preferences);
+
         am = (AlarmManager)getSystemService(ALARM_SERVICE);
     }
 

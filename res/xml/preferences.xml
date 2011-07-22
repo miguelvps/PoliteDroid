@@ -1,4 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <CheckBoxPreference android:key="options_enabled" android:title="@string/options_enabled" android:summary="@string/options_enabled_summary"></CheckBoxPreference>
+<PreferenceScreen
+        xmlns:android="http://schemas.android.com/apk/res/android">
+    <CheckBoxPreference
+            android:key="options_enabled"
+            android:title="@string/options_enabled"
+            android:summary="@string/options_enabled_summary"/>
+    <PreferenceCategory
+            android:key="options_settings"
+            android:title="@string/options_settings">
+        <com.pkg.android.preference.ListPreferenceMultiSelectCalendar
+                android:key="options_calendars"
+                android:title="@string/options_calendars"
+                android:summary="@string/options_calendars_summary"
+                android:dialogTitle="@string/options_calendars"
+                android:entries="@array/calendars"
+                android:entryValues="@array/calendars"/>
+    </PreferenceCategory>
 </PreferenceScreen>

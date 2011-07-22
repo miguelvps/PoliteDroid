@@ -17,6 +17,7 @@ public class EventCursor extends CursorWrapper {
 
     public Event getEvent() {
         return new Event(getLong(getColumnIndex(Event.ID)),
+                         getLong(getColumnIndex(Event.CALENDAR_ID)),
                          getLong(getColumnIndex(Event.DTSTART)),
                          getLong(getColumnIndex(Event.DTEND)));
     }
