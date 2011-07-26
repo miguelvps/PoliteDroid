@@ -50,18 +50,21 @@ public class Calendar {
     public static final String OWNER_ACCOUNT = "ownerAccount";
 
     public static ArrayList<Calendar> getCalendars(Context context) {
-        String[] projection = new String[] { Calendar.ID, Calendar.NAME};
+        String[] projection = new String[] { Calendar.ID, Calendar.NAME };
         Cursor cursor = context.getContentResolver().query(CONTENT_URI, projection, null, null, null);
 
-        int count = cursor.getCount();
-        ArrayList<Calendar> calendars = new ArrayList<Calendar>(count);
-        if (cursor.getCount() > 0) {
+        ArrayList<Calendar> calendars;
+        if (cursor != null) {
+            calendars = new ArrayList<Calendar>(cursor.getCount());
             while (cursor.moveToNext()) {
                 calendars.add(new Calendar(cursor.getLong(cursor.getColumnIndex(Calendar.ID)),
                         cursor.getString(cursor.getColumnIndex(Calendar.NAME))));
             }
+            cursor.close();
         }
-        cursor.close();
+        else {
+            calendars = new ArrayList<Calendar>(0);
+        }
 
         return calendars;
     }

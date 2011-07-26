@@ -31,7 +31,7 @@ public class Event {
     public static EventCursor getEvents(Context context, String selection, String[] selectionArgs, String sortOrder) {
         String[] projection = new String[] { Event.ID, Event.CALENDAR_ID, Event.DTSTART, Event.DTEND };
         Cursor cursor = context.getContentResolver().query(CONTENT_URI, projection, selection, selectionArgs, sortOrder);
-        return new EventCursor(cursor);
+        return cursor == null ? null : new EventCursor(cursor);
     }
 
     public static EventCursor getCurrentEvents(Context context) {

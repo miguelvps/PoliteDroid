@@ -52,7 +52,7 @@ public class Update extends BroadcastReceiver {
         // mute | unmute
         selection = "dtstart < ? and dtend > ?" + calendar_filter;
         events = Event.getEvents(context, selection, selectionArgs, null);
-        if (events.moveToNext()) {
+        if (events != null && events.moveToNext()) {
             // mute
             if (!sp.getBoolean("isMute", false)) {
                 int ringerMode = audio.getRingerMode();
@@ -71,13 +71,13 @@ public class Update extends BroadcastReceiver {
         selectionArgs[1] = Long.toString(then);
         selection = "dtstart > ? and dtstart < ?" + calendar_filter;
         events = Event.getEvents(context, selection, selectionArgs, "dtstart");
-        if (events.moveToNext()) {
+        if (events != null && events.moveToNext()) {
             long next = events.getEvent().mStart;
             then = next < then ? next : then;
         }
         selection = "dtend > ? and dtend < ?" + calendar_filter;
         events = Event.getEvents(context, selection, selectionArgs, "dtend");
-        if (events.moveToNext()) {
+        if (events != null && events.moveToNext()) {
             long next = events.getEvent().mStart;
             then = next < then ? next : then;
         }
