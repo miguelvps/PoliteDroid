@@ -18,7 +18,7 @@ import com.pkg.Calendar.EventCursor;
 import com.pkg.android.preference.ListPreferenceMultiSelect;
 import com.pkg.util.StringUtil;
 
-public class CalendarUpdate extends BroadcastReceiver {
+public class Update extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -83,7 +83,7 @@ public class CalendarUpdate extends BroadcastReceiver {
         }
 
         // launch next event intent
-        Intent updateIntent = new Intent(context, CalendarUpdate.class);
+        Intent updateIntent = new Intent(context, Update.class);
         PendingIntent sender = PendingIntent.getBroadcast(context, 0, updateIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         alarm.set(AlarmManager.RTC_WAKEUP, then, sender);
         Toast.makeText(context, "Next", Toast.LENGTH_SHORT).show();

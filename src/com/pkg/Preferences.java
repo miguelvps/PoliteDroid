@@ -43,7 +43,7 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
         if (key.equals("options_enabled")) {
             if (sharedPreferences.getBoolean(key, false)) {
                 // start alarm
-                Intent intent = new Intent(Preferences.this, CalendarUpdate.class);
+                Intent intent = new Intent(Preferences.this, Update.class);
                 PendingIntent sender = PendingIntent.getBroadcast(Preferences.this, 0, intent, 0);
                 am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), sender);
 
@@ -58,7 +58,7 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
                 }
 
                 // stop alarm
-                Intent intent = new Intent(Preferences.this, CalendarUpdate.class);
+                Intent intent = new Intent(Preferences.this, Update.class);
                 PendingIntent sender = PendingIntent.getBroadcast(Preferences.this, 0, intent, 0);
                 am.cancel(sender);
 
