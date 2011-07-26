@@ -78,7 +78,7 @@ public class Update extends BroadcastReceiver {
         selection = "dtend > ? and dtend < ?" + calendar_filter;
         events = Event.getEvents(context, selection, selectionArgs, "dtend");
         if (events != null && events.moveToNext()) {
-            long next = events.getEvent().mStart;
+            long next = events.getEvent().mEnd;
             then = next < then ? next : then;
         }
 
