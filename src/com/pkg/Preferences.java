@@ -9,9 +9,11 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
-import android.widget.Toast;
+import android.util.Log;
 
 public class Preferences extends PreferenceActivity implements OnSharedPreferenceChangeListener {
+
+    public final static String TAG = "PoliteDroid";
 
     private AlarmManager am;
 
@@ -39,7 +41,7 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
     }
 
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        // Toast.makeText(Preferences.this, "Shared Preferences changed", Toast.LENGTH_SHORT).show();
+        Log.d(Preferences.TAG, "Preference changed: " + key);
         if (key.equals("options_enabled")) {
             if (sharedPreferences.getBoolean(key, false)) {
                 // start alarm
@@ -47,7 +49,7 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
                 PendingIntent sender = PendingIntent.getBroadcast(Preferences.this, 0, intent, 0);
                 am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), sender);
 
-                Toast.makeText(Preferences.this, "Alarm set!", Toast.LENGTH_SHORT).show();
+                Log.d(Preferences.TAG, "Enable app");
             }
             else {
                 // unmute if self muted
@@ -62,7 +64,7 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
                 PendingIntent sender = PendingIntent.getBroadcast(Preferences.this, 0, intent, 0);
                 am.cancel(sender);
 
-                Toast.makeText(this, "Alarm unset!", Toast.LENGTH_SHORT).show();
+                Log.d(Preferences.TAG, "Disable app");
             }
         }
 

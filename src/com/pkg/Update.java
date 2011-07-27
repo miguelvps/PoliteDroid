@@ -11,7 +11,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.preference.PreferenceManager;
-import android.widget.Toast;
+import android.util.Log;
 
 import com.pkg.Calendar.Event;
 import com.pkg.Calendar.EventCursor;
@@ -22,7 +22,7 @@ public class Update extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Toast.makeText(context, "Update", Toast.LENGTH_SHORT).show();
+        Log.d(Preferences.TAG, "Update onReceive");
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         if (!sp.getBoolean("options_enabled", false))
@@ -86,7 +86,8 @@ public class Update extends BroadcastReceiver {
         Intent updateIntent = new Intent(context, Update.class);
         PendingIntent sender = PendingIntent.getBroadcast(context, 0, updateIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         alarm.set(AlarmManager.RTC_WAKEUP, then, sender);
-        Toast.makeText(context, "Next", Toast.LENGTH_SHORT).show();
+        Log.d(Preferences.TAG, "Update alarm set in: " + Long.toString((then - now) / 1000 / 60));
+        Log.d(Preferences.TAG, "Update done");
     }
 
 }
