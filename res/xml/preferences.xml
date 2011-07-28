@@ -15,5 +15,11 @@
                 android:dialogTitle="@string/options_calendars"
                 android:entries="@array/calendars"
                 android:entryValues="@array/calendars"/>
+        <ListPreference
+                android:key="options_sound_profile"
+                android:title="@string/options_sound_profile"
+                android:entries="@array/sound_profiles"
+                android:entryValues="@array/sound_profiles_values"
+                android:defaultValue="1"/>
     </PreferenceCategory>
 </PreferenceScreen>
