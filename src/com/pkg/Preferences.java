@@ -42,14 +42,14 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
 
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         Log.d(Preferences.TAG, "Preference changed: " + key);
-        if (key.equals("options_enabled")) {
-            if (sharedPreferences.getBoolean(key, false)) {
+        if (key.startsWith("options")) {
+            if (sharedPreferences.getBoolean("options_enabled", false)) {
                 // start alarm
                 Intent intent = new Intent(Preferences.this, Update.class);
                 PendingIntent sender = PendingIntent.getBroadcast(Preferences.this, 0, intent, 0);
                 am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), sender);
 
-                Log.d(Preferences.TAG, "Enable app");
+                Log.d(Preferences.TAG, "Set update alarm");
             }
             else {
                 // unmute if self muted
@@ -64,7 +64,7 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
                 PendingIntent sender = PendingIntent.getBroadcast(Preferences.this, 0, intent, 0);
                 am.cancel(sender);
 
-                Log.d(Preferences.TAG, "Disable app");
+                Log.d(Preferences.TAG, "Unset update alarm");
             }
         }
 
