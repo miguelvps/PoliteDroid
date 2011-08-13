@@ -46,8 +46,7 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
             if (sharedPreferences.getBoolean("options_enabled", false)) {
                 // start alarm
                 Intent intent = new Intent(Preferences.this, Update.class);
-                PendingIntent sender = PendingIntent.getBroadcast(Preferences.this, 0, intent, 0);
-                am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), sender);
+                sendBroadcast(intent);
 
                 Log.d(Preferences.TAG, "Set update alarm");
             }
