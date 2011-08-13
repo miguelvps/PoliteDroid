@@ -67,7 +67,7 @@ public class Update extends BroadcastReceiver {
                                              sp.getInt("ringer_mode", AudioManager.RINGER_MODE_VIBRATE)));
             }
         }
-        else {
+        else if (sp.getBoolean("isMute", false)) {
             // unmute
             audio.setRingerMode(sp.getInt("ringer_mode", AudioManager.RINGER_MODE_NORMAL));
             sp.edit().putBoolean("isMute", false).commit();
