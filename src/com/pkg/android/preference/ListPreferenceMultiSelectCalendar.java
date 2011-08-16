@@ -6,7 +6,7 @@ import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.util.AttributeSet;
 
-import com.pkg.Calendar.Calendar;
+import com.pkg.calendar.Calendar;
 
 public class ListPreferenceMultiSelectCalendar extends ListPreferenceMultiSelect {
 

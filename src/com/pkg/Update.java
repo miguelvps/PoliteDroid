@@ -13,9 +13,9 @@ import android.media.AudioManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.pkg.Calendar.Event;
-import com.pkg.Calendar.EventCursor;
 import com.pkg.android.preference.ListPreferenceMultiSelect;
+import com.pkg.calendar.Event;
+import com.pkg.calendar.EventCursor;
 import com.pkg.util.StringUtil;
 
 public class Update extends BroadcastReceiver {

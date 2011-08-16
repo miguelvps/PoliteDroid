@@ -1,4 +1,4 @@
-package com.pkg.Calendar;
+package com.pkg.calendar;
 
 import java.lang.reflect.Field;
 

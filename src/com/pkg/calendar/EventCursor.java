@@ -1,4 +1,4 @@
-package com.pkg.Calendar;
+package com.pkg.calendar;
 
 import android.database.Cursor;
 import android.database.CursorWrapper;
