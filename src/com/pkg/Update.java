@@ -55,15 +55,16 @@ public class Update extends BroadcastReceiver {
         if (events != null && events.moveToNext()) {
             // mute
             int ringerMode = audio.getRingerMode();
-            int sound_profile = Integer.parseInt(sp.getString("options_sound_profile",
-                                                              Integer.toString(AudioManager.RINGER_MODE_VIBRATE)));
+            boolean vibrate = sp.getBoolean("options_vibrate", false);
+            int options_ringer_mode = vibrate ? AudioManager.RINGER_MODE_VIBRATE : AudioManager.RINGER_MODE_SILENT;
+
             if (!sp.getBoolean("isMute", false)) {
                 sp.edit().putInt("ringer_mode", ringerMode).commit();
-                audio.setRingerMode(Math.min(ringerMode, sound_profile));
+                audio.setRingerMode(Math.min(ringerMode, options_ringer_mode));
                 sp.edit().putBoolean("isMute", true).commit();
             }
-            else if (ringerMode != sound_profile) {
-                audio.setRingerMode(Math.min(sound_profile,
+            else if (ringerMode != options_ringer_mode) {
+                audio.setRingerMode(Math.min(options_ringer_mode,
                                              sp.getInt("ringer_mode", AudioManager.RINGER_MODE_VIBRATE)));
             }
         }
