@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">Polite Droid</string>
     <string name="options_enabled">Enabled</string>
-    <string name="options_enabled_summary">Mute sound</string>
+    <string name="options_enabled_summary">Activate silent mode during calendar events</string>
     <string name="options_settings">Settings</string>
     <string name="options_calendars">Calendars</string>
     <string name="options_calendars_summary">Select calendars</string>
