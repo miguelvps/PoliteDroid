@@ -1,4 +1,4 @@
-package com.pkg.util;
+package com.politedroid.util;
 
 import java.util.Iterator;
 

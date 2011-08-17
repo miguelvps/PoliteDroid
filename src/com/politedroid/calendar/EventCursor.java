@@ -1,4 +1,4 @@
-package com.pkg.calendar;
+package com.politedroid.calendar;
 
 import android.database.Cursor;
 import android.database.CursorWrapper;

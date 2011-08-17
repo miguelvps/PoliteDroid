@@ -1,4 +1,4 @@
-package com.pkg.calendar;
+package com.politedroid.calendar;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

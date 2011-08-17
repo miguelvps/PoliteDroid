@@ -1,4 +1,4 @@
-package com.pkg.android.preference;
+package android.preference;
 
 import android.app.AlertDialog.Builder;
 import android.content.Context;

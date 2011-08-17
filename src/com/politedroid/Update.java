@@ -1,4 +1,4 @@
-package com.pkg;
+package com.politedroid;
 
 import java.util.Arrays;
 import java.util.Calendar;
@@ -10,13 +10,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
+import android.preference.ListPreferenceMultiSelect;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.pkg.android.preference.ListPreferenceMultiSelect;
-import com.pkg.calendar.Event;
-import com.pkg.calendar.EventCursor;
-import com.pkg.util.StringUtil;
+import com.politedroid.calendar.Event;
+import com.politedroid.calendar.EventCursor;
+import com.politedroid.util.StringUtil;
 
 public class Update extends BroadcastReceiver {
 

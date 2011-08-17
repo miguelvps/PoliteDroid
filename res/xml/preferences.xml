@@ -8,7 +8,7 @@
     <PreferenceCategory
             android:key="options_settings"
             android:title="@string/options_settings">
-        <com.pkg.android.preference.ListPreferenceMultiSelectCalendar
+        <android.preference.ListPreferenceMultiSelectCalendar
                 android:key="options_calendars"
                 android:title="@string/options_calendars"
                 android:summary="@string/options_calendars_summary"

@@ -1,4 +1,4 @@
-package com.pkg;
+package com.politedroid;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
