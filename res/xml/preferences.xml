@@ -19,6 +19,10 @@
                 android:key="options_events_all_day"
                 android:title="@string/options_events_all_day"
                 android:summary="@string/options_events_all_day_summary"/>
+        <CheckBoxPreference 
+                android:key="options_events_busy"
+                android:title="@string/options_events_busy"
+                android:summary="@string/options_events_busy_summary"/>
         <CheckBoxPreference
                 android:key="options_vibrate"
                 android:title="@string/options_vibrate"

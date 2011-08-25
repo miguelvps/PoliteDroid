@@ -20,6 +20,7 @@ public class EventCursor extends CursorWrapper {
                          getLong(getColumnIndex(Event.CALENDAR_ID)),
                          getLong(getColumnIndex(Event.DTSTART)),
                          getLong(getColumnIndex(Event.DTEND)),
-                         getInt(getColumnIndex(Event.ALL_DAY)) != 0);
+                         getInt(getColumnIndex(Event.ALL_DAY)) != 0,
+                         getInt(getColumnIndex(Event.TRANSPARENCY)) == 0);
     }
 }

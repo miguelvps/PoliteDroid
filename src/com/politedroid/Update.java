@@ -48,6 +48,10 @@ public class Update extends BroadcastReceiver {
             filter += " and " + Event.ALL_DAY + " = 0";
             Log.d(Preferences.TAG, "Filtering all day events...");
         }
+        if (sp.getBoolean("options_events_busy", false)) {
+            filter += " and " + Event.TRANSPARENCY + " = 0";
+            Log.d(Preferences.TAG, "Filtering only busy events...");
+        }
 
         String selection;
         String[] selectionArgs = { nows, nows };
