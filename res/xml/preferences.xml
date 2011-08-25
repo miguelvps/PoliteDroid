@@ -16,6 +16,10 @@
                 android:entries="@array/calendars"
                 android:entryValues="@array/calendars"/>
         <CheckBoxPreference
+                android:key="options_events_all_day"
+                android:title="@string/options_events_all_day"
+                android:summary="@string/options_events_all_day_summary"/>
+        <CheckBoxPreference
                 android:key="options_vibrate"
                 android:title="@string/options_vibrate"
                 android:summary="@string/options_vibrate_summary"
