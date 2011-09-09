@@ -36,7 +36,7 @@ public class Update extends BroadcastReceiver {
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(now);
-        calendar.add(Calendar.MINUTE, 15); // check calendar every 15m by default
+        calendar.add(Calendar.MINUTE, 20);
         long then = calendar.getTimeInMillis();
 
         String filter = "";
@@ -99,9 +99,19 @@ public class Update extends BroadcastReceiver {
 
         // launch next event intent
         Intent updateIntent = new Intent(context, Update.class);
-        PendingIntent sender = PendingIntent.getBroadcast(context, 0, updateIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-        alarm.set(AlarmManager.RTC_WAKEUP, then, sender);
-        Log.d(Preferences.TAG, "Update alarm set in: " + Long.toString((then - now) / 1000 / 60));
+        if (then == calendar.getTimeInMillis()) {
+            // if alarm is not set
+            if (PendingIntent.getBroadcast(context, 0, updateIntent, PendingIntent.FLAG_NO_CREATE) == null) {
+                PendingIntent sender = PendingIntent.getBroadcast(context, 0, updateIntent, 0);
+                alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, then, AlarmManager.INTERVAL_FIFTEEN_MINUTES, sender);
+                Log.d(Preferences.TAG, "Set repeating alarm");
+            }
+        }
+        else {
+            PendingIntent sender = PendingIntent.getBroadcast(context, 0, updateIntent, PendingIntent.FLAG_CANCEL_CURRENT|PendingIntent.FLAG_ONE_SHOT);
+            alarm.set(AlarmManager.RTC_WAKEUP, then, sender);
+            Log.d(Preferences.TAG, "Update alarm set in: " + Long.toString((then - now) / 1000 / 60));
+        }
         Log.d(Preferences.TAG, "Update done");
     }
 

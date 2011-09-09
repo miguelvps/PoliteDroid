@@ -62,6 +62,7 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
                 Intent intent = new Intent(Preferences.this, Update.class);
                 PendingIntent sender = PendingIntent.getBroadcast(Preferences.this, 0, intent, 0);
                 am.cancel(sender);
+                sender.cancel();
 
                 Log.d(Preferences.TAG, "Unset update alarm");
             }
