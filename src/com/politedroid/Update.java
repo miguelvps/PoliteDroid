@@ -22,7 +22,7 @@ public class Update extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d(Preferences.TAG, "Update onReceive");
+        Log.d(Preferences.TAG, "Update start");
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         if (!sp.getBoolean("options_enabled", false))

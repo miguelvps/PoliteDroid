@@ -48,7 +48,7 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
                 Intent intent = new Intent(Preferences.this, Update.class);
                 sendBroadcast(intent);
 
-                Log.d(Preferences.TAG, "Set update alarm");
+                Log.d(Preferences.TAG, "Enabled");
             }
             else {
                 // unmute if self muted
@@ -64,7 +64,7 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
                 am.cancel(sender);
                 sender.cancel();
 
-                Log.d(Preferences.TAG, "Unset update alarm");
+                Log.d(Preferences.TAG, "Disabled");
             }
         }
 
