@@ -46,7 +46,7 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
                 }
 
                 // start alarm
-                Intent intent = new Intent(Preferences.this, Update.class);
+                Intent intent = new Intent(getApplicationContext(), Update.class);
                 sendBroadcast(intent);
 
                 Log.d(PoliteDroid.TAG, "enabled");
@@ -64,8 +64,8 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
                 }
 
                 // stop alarm
-                Intent intent = new Intent(Preferences.this, Update.class);
-                PendingIntent sender = PendingIntent.getBroadcast(Preferences.this, 0, intent, 0);
+                Intent intent = new Intent(getApplicationContext(), Update.class);
+                PendingIntent sender = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
                 ((AlarmManager)getSystemService(ALARM_SERVICE)).cancel(sender);
                 sender.cancel();
 
