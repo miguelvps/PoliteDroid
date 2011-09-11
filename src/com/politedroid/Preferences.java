@@ -13,21 +13,17 @@ import android.util.Log;
 
 public class Preferences extends PreferenceActivity implements OnSharedPreferenceChangeListener {
 
-    public final static String TAG = "PoliteDroid";
-
-    private AlarmManager am;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(PoliteDroid.TAG, "Preferences.onCreate()");
         super.onCreate(savedInstanceState);
 
         addPreferencesFromResource(R.xml.preferences);
-
-        am = (AlarmManager)getSystemService(ALARM_SERVICE);
     }
 
     @Override
     protected void onResume() {
+        Log.d(PoliteDroid.TAG, "Preferences.onResume()");
         super.onResume();
 
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
@@ -35,13 +31,14 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
 
     @Override
     protected void onPause() {
+        Log.d(PoliteDroid.TAG, "Preferences.onPause()");
         super.onPause();
 
         getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
     }
 
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        Log.d(Preferences.TAG, "Preference changed: " + key);
+        Log.d(PoliteDroid.TAG, "Preferences.onSharedPreferenceChanged(" + key + ")");
         if (key.startsWith("options")) {
             if (sharedPreferences.getBoolean("options_enabled", false)) {
                 if (key.equals("options_enabled")) {
@@ -52,7 +49,7 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
                 Intent intent = new Intent(Preferences.this, Update.class);
                 sendBroadcast(intent);
 
-                Log.d(Preferences.TAG, "Enabled");
+                Log.d(PoliteDroid.TAG, "enabled");
             }
             else {
                 if (key.equals("options_enabled")) {
@@ -69,10 +66,10 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
                 // stop alarm
                 Intent intent = new Intent(Preferences.this, Update.class);
                 PendingIntent sender = PendingIntent.getBroadcast(Preferences.this, 0, intent, 0);
-                am.cancel(sender);
+                ((AlarmManager)getSystemService(ALARM_SERVICE)).cancel(sender);
                 sender.cancel();
 
-                Log.d(Preferences.TAG, "Disabled");
+                Log.d(PoliteDroid.TAG, "disabled");
             }
         }
 

@@ -36,14 +36,6 @@ public class Event {
         return cursor == null ? null : new EventCursor(cursor);
     }
 
-    public static EventCursor getCurrentEvents(Context context) {
-        String now = Long.toString(System.currentTimeMillis());
-        String selection = "dtstart < ? and dtend > ?";
-        String[] selectionArgs = { now, now };
-        return getEvents(context, selection, selectionArgs, Event.DTSTART);
-    }
-
-
     public Long mId;
     public Long mCalendarId;
     public Long mStart;

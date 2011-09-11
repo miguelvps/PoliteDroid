@@ -11,6 +11,8 @@ import com.politedroid.calendar.Event;
 
 public class PoliteDroid extends Application {
 
+    public final static String TAG = "PoliteDroid";
+
     private EventsContentObserver mEventContentObserver;
 
     private class EventsContentObserver extends ContentObserver {
@@ -21,7 +23,7 @@ public class PoliteDroid extends Application {
 
         @Override
         public void onChange(boolean selfChange) {
-            Log.d(Preferences.TAG, "EventsContentObserver.onChange(" + selfChange + ")");
+            Log.d(PoliteDroid.TAG, "EventsContentObserver.onChange(" + selfChange + ")");
             super.onChange(selfChange);
             Intent intent = new Intent(getApplicationContext(), Update.class);
             sendBroadcast(intent);
@@ -31,7 +33,7 @@ public class PoliteDroid extends Application {
 
     @Override
     public void onCreate() {
-        Log.d(Preferences.TAG, "PoliteDroid.onCreate()");
+        Log.d(PoliteDroid.TAG, "PoliteDroid.onCreate()");
         super.onCreate();
 
         mEventContentObserver = new EventsContentObserver(new Handler());
@@ -41,12 +43,12 @@ public class PoliteDroid extends Application {
     }
 
     public void registerEventsContentObserver() {
-        Log.d(Preferences.TAG, "PoliteDroid.registerEventsContentObserver()");
+        Log.d(PoliteDroid.TAG, "PoliteDroid.registerEventsContentObserver()");
         getApplicationContext().getContentResolver().registerContentObserver(Event.CONTENT_URI, true, mEventContentObserver);
     }
 
     public void unregisterEventsContentObserver() {
-        Log.d(Preferences.TAG, "PoliteDroid.unregisterEventsContentObserver()");
+        Log.d(PoliteDroid.TAG, "PoliteDroid.unregisterEventsContentObserver()");
         getApplicationContext().getContentResolver().unregisterContentObserver(mEventContentObserver);
     }
 

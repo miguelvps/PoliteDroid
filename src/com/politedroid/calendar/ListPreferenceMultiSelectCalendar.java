@@ -1,12 +1,12 @@
-package android.preference;
+package com.politedroid.calendar;
 
 import java.util.ArrayList;
 
 import android.app.AlertDialog.Builder;
 import android.content.Context;
+import android.preference.ListPreferenceMultiSelect;
 import android.util.AttributeSet;
 
-import com.politedroid.calendar.Calendar;
 
 public class ListPreferenceMultiSelectCalendar extends ListPreferenceMultiSelect {
 
