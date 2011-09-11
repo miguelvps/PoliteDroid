@@ -9,7 +9,7 @@ import android.net.Uri;
 public class Event {
 
     private static final String BASE_EVENTS_URI = Calendar.getBaseCalendarUri() + "/events";
-    private static final Uri CONTENT_URI = getUri();
+    public static final Uri CONTENT_URI = getUri();
 
     public static final String ID = "_id";
     public static final String DTSTART = "dtstart";
