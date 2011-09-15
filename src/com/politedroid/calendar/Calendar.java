@@ -29,7 +29,8 @@ import com.politedroid.PoliteDroid;
 
 public class Calendar {
 
-    private static final String BASE_CALENDARS_URI = getBaseCalendarUri() + "/calendars";
+    public static final String BASE_CALENDAR_URI = getBaseCalendarUri();
+    private static final String BASE_CALENDARS_URI = BASE_CALENDAR_URI + "/calendars";
     private static final Uri CONTENT_URI = getUri();
 
     public static String getBaseCalendarUri() {

@@ -49,7 +49,6 @@ public class Update extends BroadcastReceiver {
         AudioManager audio = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
 
         long now = System.currentTimeMillis();
-        String nows = Long.toString(now);
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(now);
@@ -72,12 +71,11 @@ public class Update extends BroadcastReceiver {
         }
 
         String selection;
-        String[] selectionArgs = { nows, nows };
         EventCursor events;
 
         // mute | unmute
-        selection = "dtstart < ? and dtend > ?" + filter;
-        events = Event.getEvents(context, selection, selectionArgs, null);
+        selection = "begin < " + now + " and end > " + now + filter;
+        events = Event.getEvents(context, now, now, selection, null);
         if (events != null && events.moveToNext()) {
             // mute
             int ringerMode = audio.getRingerMode();
@@ -101,16 +99,15 @@ public class Update extends BroadcastReceiver {
         }
 
         // find next event start or end
-        selectionArgs[1] = Long.toString(then);
-        selection = "dtstart > ? and dtstart < ?" + filter;
-        events = Event.getEvents(context, selection, selectionArgs, "dtstart");
+        selection = "begin > " + now + " and begin < " + then + filter;
+        events = Event.getEvents(context, now, then, selection, "begin");
         if (events != null && events.moveToNext()) {
-            long next = events.getEvent().mStart;
+            long next = events.getEvent().mBegin;
             if (next < then)
                 then = next;
         }
-        selection = "dtend > ? and dtend < ?" + filter;
-        events = Event.getEvents(context, selection, selectionArgs, "dtend");
+        selection = "end > " + now + " and end < " + then + filter;
+        events = Event.getEvents(context, now, then, selection, "end");
         if (events != null && events.moveToNext()) {
             long next = events.getEvent().mEnd;
             if (next < then)
