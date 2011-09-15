@@ -23,6 +23,9 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.util.Log;
+
+import com.politedroid.PoliteDroid;
 
 public class Calendar {
 
@@ -34,21 +37,25 @@ public class Calendar {
             Class<?> calendarProviderClass = Class.forName("android.provider.Calendar");
             Field uriField = calendarProviderClass.getField("CONTENT_URI");
             Uri calendarUri = (Uri) uriField.get(null);
+            Log.d(PoliteDroid.TAG, "Calendar.getBaseCalendarUri() - URI (reflection): " + calendarUri.toString());
             return calendarUri.toString();
         }
         catch (Exception e) {
+            Log.d(PoliteDroid.TAG, "Calendar.getBaseCalendarUri() - URI (reflection) failed: " + e.toString());
             return "content://com.android.calendar";
         }
     }
 
     private static Uri getUri() {
         try {
-            Class<?> calendarsProviderClass = Class.forName("android.provider.Calendar.Calendars");
+            Class<?> calendarsProviderClass = Class.forName("android.provider.Calendar$Calendars");
             Field uriField = calendarsProviderClass.getField("CONTENT_URI");
             Uri calendarsUri = (Uri) uriField.get(null);
+            Log.d(PoliteDroid.TAG, "Calendars.getUri() - URI (reflection): " + calendarsUri.toString());
             return calendarsUri;
         }
         catch (Exception e) {
+            Log.d(PoliteDroid.TAG, "Calendars.getUri() - URI (reflection) failed: " + e.toString());
             return Uri.parse(BASE_CALENDARS_URI);
         }
     }

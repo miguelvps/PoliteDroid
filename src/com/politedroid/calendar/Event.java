@@ -22,6 +22,9 @@ import java.lang.reflect.Field;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.util.Log;
+
+import com.politedroid.PoliteDroid;
 
 public class Event {
 
@@ -37,12 +40,14 @@ public class Event {
 
     private static Uri getUri() {
         try {
-            Class<?> calendarEventsProviderClass = Class.forName("android.provider.Calendar.Events");
+            Class<?> calendarEventsProviderClass = Class.forName("android.provider.Calendar$Events");
             Field uriField = calendarEventsProviderClass.getField("CONTENT_URI");
             Uri eventsUri = (Uri) uriField.get(null);
+            Log.d(PoliteDroid.TAG, "Event.getUri() - URI (reflection): " + eventsUri.toString());
             return eventsUri;
         }
         catch (Exception e) {
+            Log.d(PoliteDroid.TAG, "Event.getUri() - URI (reflection) failed: " + e.toString());
             return Uri.parse(BASE_EVENTS_URI);
         }
     }
