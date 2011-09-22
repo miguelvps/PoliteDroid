@@ -58,10 +58,6 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
         Log.d(PoliteDroid.TAG, "Preferences.onSharedPreferenceChanged(" + key + ")");
         if (key.startsWith("options")) {
             if (sharedPreferences.getBoolean("options_enabled", false)) {
-                if (key.equals("options_enabled")) {
-                    ((PoliteDroid)getApplication()).registerEventsContentObserver();
-                }
-
                 // start alarm
                 Intent intent = new Intent(getApplicationContext(), Update.class);
                 sendBroadcast(intent);
@@ -69,10 +65,6 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
                 Log.d(PoliteDroid.TAG, "enabled");
             }
             else {
-                if (key.equals("options_enabled")) {
-                    ((PoliteDroid)getApplication()).unregisterEventsContentObserver();
-                }
-
                 // unmute if self muted
                 if (sharedPreferences.getBoolean("isMute", false)) {
                     AudioManager audio = (AudioManager)getSystemService(Context.AUDIO_SERVICE);

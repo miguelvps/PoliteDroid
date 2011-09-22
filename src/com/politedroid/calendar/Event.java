@@ -29,11 +29,9 @@ import com.politedroid.PoliteDroid;
 
 public class Event {
 
-    private static final String BASE_EVENTS_URI = Calendar.BASE_CALENDAR_URI + "/events";
-    private static final String BASE_INSTANCES_URI = Calendar.BASE_CALENDAR_URI + "/instances/when";
+    private static final String BASE_EVENTS_URI = Calendar.BASE_CALENDAR_URI + "/instances/when";
 
     public static final Uri CONTENT_URI = getUri();
-    public static final Uri INSTANCES_URI = getInstancesUri();
 
     public static final String ID = "_id";
     public static final String BEGIN = "begin";
@@ -44,20 +42,6 @@ public class Event {
 
     private static Uri getUri() {
         try {
-            Class<?> calendarEventsProviderClass = Class.forName("android.provider.Calendar$Events");
-            Field uriField = calendarEventsProviderClass.getField("CONTENT_URI");
-            Uri eventsUri = (Uri) uriField.get(null);
-            Log.d(PoliteDroid.TAG, "Event.getUri() - URI (reflection): " + eventsUri.toString());
-            return eventsUri;
-        }
-        catch (Exception e) {
-            Log.d(PoliteDroid.TAG, "Event.getUri() - URI (reflection) failed: " + e.toString());
-            return Uri.parse(BASE_EVENTS_URI);
-        }
-    }
-
-    private static Uri getInstancesUri() {
-        try {
             Class<?> calendarEventsProviderClass = Class.forName("android.provider.Calendar$Instances");
             Field uriField = calendarEventsProviderClass.getField("CONTENT_URI");
             Uri eventsUri = (Uri) uriField.get(null);
@@ -66,13 +50,13 @@ public class Event {
         }
         catch (Exception e) {
             Log.d(PoliteDroid.TAG, "Event.getInstancesUri() - URI (reflection) failed: " + e.toString());
-            return Uri.parse(BASE_INSTANCES_URI);
+            return Uri.parse(BASE_EVENTS_URI);
         }
     }
 
     public static EventCursor getEvents(Context context, long begin, long end, String selection, String sortOrder) {
         String[] projection = new String[] { Event.ID, Event.CALENDAR_ID, Event.BEGIN, Event.END, Event.ALL_DAY, Event.TRANSPARENCY };
-        Uri.Builder builder = INSTANCES_URI.buildUpon();
+        Uri.Builder builder = CONTENT_URI.buildUpon();
         ContentUris.appendId(builder, begin);
         ContentUris.appendId(builder, end);
         Cursor cursor = context.getContentResolver().query(builder.build(), projection, selection, null, sortOrder);
