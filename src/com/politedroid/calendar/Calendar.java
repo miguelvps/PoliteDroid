@@ -83,7 +83,7 @@ public class Calendar {
             calendars = new ArrayList<Calendar>(cursor.getCount());
             while (cursor.moveToNext()) {
                 calendars.add(new Calendar(cursor.getLong(cursor.getColumnIndex(Calendar.ID)),
-                        cursor.getString(cursor.getColumnIndex(Calendar.NAME))));
+                                           cursor.getString(cursor.getColumnIndex(Calendar.NAME))));
             }
             cursor.close();
         }
@@ -99,6 +99,6 @@ public class Calendar {
 
     public Calendar(Long id, String name) {
         this.mId = id;
-        this.mName = name;
+        this.mName = name == null ? "My calendar" : name;
     }
 }
