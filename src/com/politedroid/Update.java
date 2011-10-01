@@ -50,9 +50,12 @@ public class Update extends BroadcastReceiver {
 
         long now = System.currentTimeMillis();
 
+        int update_interval = Integer.parseInt(sp.getString("options_update_interval",
+                                                            context.getResources().getStringArray(R.array.update_interval_values)[0]));
+
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(now);
-        calendar.add(Calendar.MINUTE, 20);
+        calendar.add(Calendar.MILLISECOND, update_interval);
         long then = calendar.getTimeInMillis();
 
         String filter = "";
@@ -118,9 +121,10 @@ public class Update extends BroadcastReceiver {
         Intent updateIntent = new Intent(context, Update.class);
         if (then == calendar.getTimeInMillis()) {
             // if alarm is not set
-            if (PendingIntent.getBroadcast(context, 0, updateIntent, PendingIntent.FLAG_NO_CREATE) == null) {
+            if (PendingIntent.getBroadcast(context, 0, updateIntent, PendingIntent.FLAG_NO_CREATE) == null
+                    || intent.getBooleanExtra("options_update_interval_changed", false)) {
                 PendingIntent sender = PendingIntent.getBroadcast(context, 0, updateIntent, 0);
-                alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, then, AlarmManager.INTERVAL_FIFTEEN_MINUTES, sender);
+                alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, then, update_interval, sender);
                 Log.d(PoliteDroid.TAG, "set repeating alarm");
             }
         }

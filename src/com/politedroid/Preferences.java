@@ -60,6 +60,9 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
             if (sharedPreferences.getBoolean("options_enabled", false)) {
                 // start alarm
                 Intent intent = new Intent(getApplicationContext(), Update.class);
+                if (key.equals("options_update_interval")) {
+                    intent.putExtra("options_update_interval_changed", true);
+                }
                 sendBroadcast(intent);
 
                 Log.d(PoliteDroid.TAG, "enabled");

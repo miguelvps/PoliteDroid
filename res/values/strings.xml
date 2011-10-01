@@ -12,4 +12,6 @@
     <string name="options_events_busy_summary">Only activate for busy events</string>
     <string name="options_vibrate">Phone vibrate</string>
     <string name="options_vibrate_summary">Allow phone to vibrate when silenced</string>
+    <string name="options_update_interval">Update interval</string>
+    <string name="options_update_interval_summary">Interval between checks for new events</string>
 </resources>
