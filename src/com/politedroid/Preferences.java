@@ -64,7 +64,7 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
 
                 Log.d(PoliteDroid.TAG, "enabled");
             }
-            else {
+            else if (key.equals("options_enabled")) {
                 // unmute if self muted
                 if (sharedPreferences.getBoolean("isMute", false)) {
                     AudioManager audio = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
