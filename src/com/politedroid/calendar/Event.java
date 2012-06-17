@@ -38,7 +38,7 @@ public class Event {
     public static final String END = "end";
     public static final String CALENDAR_ID = "calendar_id";
     public static final String ALL_DAY = "allDay";
-    public static final String TRANSPARENCY = "transparency";
+    public static final String TRANSPARENCY = getTransparencyKey();
 
     private static Uri getUri() {
         try {
@@ -51,6 +51,20 @@ public class Event {
         catch (Exception e) {
             Log.d(PoliteDroid.TAG, "Event.getInstancesUri() - URI (reflection) failed: " + e.toString());
             return Uri.parse(BASE_EVENTS_URI);
+        }
+    }
+
+    private static String getTransparencyKey() {
+        try {
+            Class<?> calendarEventsProviderClass = Class.forName("android.provider.CalendarContract$Instances");
+            Field uriField = calendarEventsProviderClass.getField("AVAILABILITY");
+            String transparency = (String) uriField.get(null);
+            Log.d(PoliteDroid.TAG, "Event.getTransparencyKey() - String (reflection): " + transparency);
+            return transparency;
+        }
+        catch (Exception e) {
+            Log.d(PoliteDroid.TAG, "Event.getTransparencyKey() - String (reflection) failed: " + e.toString());
+            return "transparency";
         }
     }
 
