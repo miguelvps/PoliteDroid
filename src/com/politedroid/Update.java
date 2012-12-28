@@ -90,7 +90,8 @@ public class Update extends BroadcastReceiver {
                 audio.setRingerMode(Math.min(ringerMode, options_ringer_mode));
                 sp.edit().putBoolean("isMute", true).commit();
             }
-            else if (ringerMode != options_ringer_mode) {
+            else if (intent.getBooleanExtra("options_vibrate_changed", false)
+                     && ringerMode != options_ringer_mode) {
                 audio.setRingerMode(Math.min(options_ringer_mode,
                                              sp.getInt("ringer_mode", AudioManager.RINGER_MODE_VIBRATE)));
             }
