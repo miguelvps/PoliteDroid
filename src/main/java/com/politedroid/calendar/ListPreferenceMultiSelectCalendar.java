@@ -17,13 +17,10 @@
 
 package com.politedroid.calendar;
 
-import java.util.ArrayList;
-
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.preference.ListPreferenceMultiSelect;
 import android.util.AttributeSet;
-
 
 public class ListPreferenceMultiSelectCalendar extends ListPreferenceMultiSelect {
 
@@ -33,14 +30,12 @@ public class ListPreferenceMultiSelectCalendar extends ListPreferenceMultiSelect
 
     @Override
     protected void onPrepareDialogBuilder(Builder builder) {
-        ArrayList<Calendar> calendars = Calendar.getCalendars(getContext());
-        CharSequence entries[] = new String[calendars.size()];
-        CharSequence entryValues[] = new String[calendars.size()];
-        int i = 0;
-        for (Calendar c : calendars) {
-            entries[i] = c.mName;
-            entryValues[i] = c.mId.toString();
-            i++;
+        Calendar[] calendars = Calendar.getCalendars(getContext());
+        CharSequence entries[] = new String[calendars.length];
+        CharSequence entryValues[] = new String[calendars.length];
+        for (int i = 0; i < calendars.length; i++) {
+            entries[i] = calendars[i].mName;
+            entryValues[i] = Long.toString(calendars[i].mId);
         }
 
         setEntries(entries);

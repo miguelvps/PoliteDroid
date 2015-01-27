@@ -17,88 +17,40 @@
 
 package com.politedroid.calendar;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.database.Cursor;
-import android.net.Uri;
-import android.util.Log;
-
-import com.politedroid.PoliteDroid;
+import android.provider.CalendarContract.Calendars;
 
 public class Calendar {
 
-    public static final String BASE_CALENDAR_URI = getBaseCalendarUri();
-    private static final String BASE_CALENDARS_URI = BASE_CALENDAR_URI + "/calendars";
-    private static final Uri CONTENT_URI = getUri();
+    private static final String[] CALENDAR_PROJECTION = new String[] {
+            Calendars._ID,  // 0
+            Calendars.NAME  // 1
+    };
 
-    public static String getBaseCalendarUri() {
-        try {
-            Class<?> calendarProviderClass = Class.forName("android.provider.Calendar");
-            Field uriField = calendarProviderClass.getField("CONTENT_URI");
-            Uri calendarUri = (Uri) uriField.get(null);
-            Log.d(PoliteDroid.TAG, "Calendar.getBaseCalendarUri() - URI (reflection): " + calendarUri.toString());
-            return calendarUri.toString();
-        }
-        catch (Exception e) {
-            Log.d(PoliteDroid.TAG, "Calendar.getBaseCalendarUri() - URI (reflection) failed: " + e.toString());
-            return "content://com.android.calendar";
-        }
-    }
+    public static final int PROJECTION_ID_INDEX = 0;
+    public static final int PROJECTION_NAME_INDEX = 1;
 
-    private static Uri getUri() {
-        try {
-            Class<?> calendarsProviderClass = Class.forName("android.provider.Calendar$Calendars");
-            Field uriField = calendarsProviderClass.getField("CONTENT_URI");
-            Uri calendarsUri = (Uri) uriField.get(null);
-            Log.d(PoliteDroid.TAG, "Calendars.getUri() - URI (reflection): " + calendarsUri.toString());
-            return calendarsUri;
-        }
-        catch (Exception e) {
-            Log.d(PoliteDroid.TAG, "Calendars.getUri() - URI (reflection) failed: " + e.toString());
-            return Uri.parse(BASE_CALENDARS_URI);
-        }
-    }
-
-    public static final String ID = "_id";
-    public static final String URL = "url";
-    public static final String NAME = "name";
-    public static final String DISPLAY_NAME = "displayName";
-    public static final String HIDDEN = "hidden";
-    public static final String COLOR = "color";
-    public static final String ACCESS_LEVEL = "access_level";
-    public static final String SELECTED = "selected";
-    public static final String SYNC_EVENTS = "sync_events";
-    public static final String LOCATION = "location";
-    public static final String TIMEZONE = "timezone";
-    public static final String OWNER_ACCOUNT = "ownerAccount";
-
-    public static ArrayList<Calendar> getCalendars(Context context) {
-        String[] projection = new String[] { Calendar.ID, Calendar.NAME };
-        Cursor cursor = context.getContentResolver().query(CONTENT_URI, projection, null, null, null);
-
-        ArrayList<Calendar> calendars;
+    public static Calendar[] getCalendars(Context context) {
+        Cursor cursor = context.getContentResolver().query(Calendars.CONTENT_URI, CALENDAR_PROJECTION, null, null, null);
         if (cursor != null) {
-            calendars = new ArrayList<Calendar>(cursor.getCount());
-            while (cursor.moveToNext()) {
-                calendars.add(new Calendar(cursor.getLong(cursor.getColumnIndex(Calendar.ID)),
-                                           cursor.getString(cursor.getColumnIndex(Calendar.NAME))));
+            CalendarCursor calendarCursor = new CalendarCursor(cursor);
+            Calendar[] calendars = new Calendar[calendarCursor.getCount()];
+            for (int i = 0; i < calendars.length && calendarCursor.moveToNext(); i++) {
+                calendars[i] = calendarCursor.getCalendar();
             }
             cursor.close();
+            return calendars;
         }
-        else {
-            calendars = new ArrayList<Calendar>(0);
-        }
-
-        return calendars;
+        return null;
     }
 
-    public Long mId;
+    public long mId;
     public String mName;
 
-    public Calendar(Long id, String name) {
+    public Calendar(long id, String name) {
         this.mId = id;
         this.mName = name == null ? "My calendar" : name;
     }
+
 }
