@@ -17,7 +17,6 @@
 
 package com.politedroid;
 
-import java.util.Arrays;
 import java.util.Calendar;
 
 import android.app.AlarmManager;
@@ -29,11 +28,11 @@ import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.preference.ListPreferenceMultiSelect;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.politedroid.calendar.Event;
 import com.politedroid.calendar.EventCursor;
-import com.politedroid.util.StringUtil;
 
 public class Update extends BroadcastReceiver {
 
@@ -58,7 +57,7 @@ public class Update extends BroadcastReceiver {
         String filter = "";
         String[] calendars = ListPreferenceMultiSelect.parseStoredValue(sp.getString("options_calendars", ""));
         if (calendars != null) {
-            filter += " and calendar_id in (" + StringUtil.join(Arrays.asList(calendars), ", ") + ")";
+            filter += " and calendar_id in (" + TextUtils.join(",", calendars) + ")";
             Log.d(PoliteDroid.TAG, "filtering some calendars...");
         }
         if (!sp.getBoolean("options_events_all_day", false)) {
