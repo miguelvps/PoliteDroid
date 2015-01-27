@@ -50,12 +50,9 @@ public class Update extends BroadcastReceiver {
 
         long now = System.currentTimeMillis();
 
-        int update_interval = Integer.parseInt(sp.getString("options_update_interval",
-                                                            context.getResources().getStringArray(R.array.update_interval_values)[0]));
-
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(now);
-        calendar.add(Calendar.MILLISECOND, update_interval);
+        calendar.add(Calendar.MILLISECOND, 604800000); // 7 days
         long then = calendar.getTimeInMillis();
 
         String filter = "";
@@ -64,7 +61,7 @@ public class Update extends BroadcastReceiver {
             filter += " and calendar_id in (" + StringUtil.join(Arrays.asList(calendars), ", ") + ")";
             Log.d(PoliteDroid.TAG, "filtering some calendars...");
         }
-        if (sp.getBoolean("options_events_all_day", false) == false) {
+        if (!sp.getBoolean("options_events_all_day", false)) {
             filter += " and " + Event.ALL_DAY + " = 0";
             Log.d(PoliteDroid.TAG, "filtering all day events...");
         }
@@ -73,67 +70,49 @@ public class Update extends BroadcastReceiver {
             Log.d(PoliteDroid.TAG, "filtering only busy events...");
         }
 
-        String selection;
-        EventCursor events;
-
         // mute | unmute
-        selection = "begin < " + now + " and end > " + now + filter;
-        events = Event.getEvents(context, now, now, selection, null);
+        String selection = "end > " + now + filter;
+        EventCursor events = Event.getEvents(context, now, then, selection, "begin asc");
         if (events != null && events.moveToNext()) {
-            // mute
-            int ringerMode = audio.getRingerMode();
-            boolean vibrate = sp.getBoolean("options_vibrate", false);
-            int options_ringer_mode = vibrate ? AudioManager.RINGER_MODE_VIBRATE : AudioManager.RINGER_MODE_SILENT;
+            Event event = events.getEvent();
+            if (event.mBegin <= now) {
+                // mute
+                int ringerMode = audio.getRingerMode();
+                boolean vibrate = sp.getBoolean("options_vibrate", false);
+                int options_ringer_mode = vibrate ? AudioManager.RINGER_MODE_VIBRATE : AudioManager.RINGER_MODE_SILENT;
 
-            if (!sp.getBoolean("isMute", false)) {
-                sp.edit().putInt("ringer_mode", ringerMode).commit();
-                audio.setRingerMode(Math.min(ringerMode, options_ringer_mode));
-                sp.edit().putBoolean("isMute", true).commit();
+                if (!sp.getBoolean("isMute", false)) {
+                    sp.edit().putInt("ringer_mode", ringerMode).commit();
+                    audio.setRingerMode(Math.min(ringerMode, options_ringer_mode));
+                    sp.edit().putBoolean("isMute", true).commit();
+                } else if (intent.getBooleanExtra("options_vibrate_changed", false)
+                        && ringerMode != options_ringer_mode) {
+                    audio.setRingerMode(Math.min(options_ringer_mode,
+                                                 sp.getInt("ringer_mode", AudioManager.RINGER_MODE_VIBRATE)));
+                }
+                then = event.mEnd;
+            } else {
+                // unmute
+                if (sp.getBoolean("isMute", false)) {
+                    audio.setRingerMode(sp.getInt("ringer_mode", AudioManager.RINGER_MODE_NORMAL));
+                    sp.edit().putBoolean("isMute", false).commit();
+                }
+                then = event.mBegin;
             }
-            else if (intent.getBooleanExtra("options_vibrate_changed", false)
-                     && ringerMode != options_ringer_mode) {
-                audio.setRingerMode(Math.min(options_ringer_mode,
-                                             sp.getInt("ringer_mode", AudioManager.RINGER_MODE_VIBRATE)));
-            }
-        }
-        else if (sp.getBoolean("isMute", false)) {
+        } else {
             // unmute
-            audio.setRingerMode(sp.getInt("ringer_mode", AudioManager.RINGER_MODE_NORMAL));
-            sp.edit().putBoolean("isMute", false).commit();
-        }
-
-        // find next event start or end
-        selection = "begin > " + now + " and begin < " + then + filter;
-        events = Event.getEvents(context, now, then, selection, "begin");
-        if (events != null && events.moveToNext()) {
-            long next = events.getEvent().mBegin;
-            if (next < then)
-                then = next;
-        }
-        selection = "end > " + now + " and end < " + then + filter;
-        events = Event.getEvents(context, now, then, selection, "end");
-        if (events != null && events.moveToNext()) {
-            long next = events.getEvent().mEnd;
-            if (next < then)
-                then = next;
+            if (sp.getBoolean("isMute", false)) {
+                audio.setRingerMode(sp.getInt("ringer_mode", AudioManager.RINGER_MODE_NORMAL));
+                sp.edit().putBoolean("isMute", false).commit();
+            }
         }
 
         // launch next event intent
         Intent updateIntent = new Intent(context, Update.class);
-        if (then == calendar.getTimeInMillis()) {
-            // if alarm is not set
-            if (PendingIntent.getBroadcast(context, 0, updateIntent, PendingIntent.FLAG_NO_CREATE) == null
-                    || intent.getBooleanExtra("options_update_interval_changed", false)) {
-                PendingIntent sender = PendingIntent.getBroadcast(context, 0, updateIntent, 0);
-                alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, then, update_interval, sender);
-                Log.d(PoliteDroid.TAG, "set repeating alarm");
-            }
-        }
-        else {
-            PendingIntent sender = PendingIntent.getBroadcast(context, 0, updateIntent, PendingIntent.FLAG_CANCEL_CURRENT|PendingIntent.FLAG_ONE_SHOT);
-            alarm.set(AlarmManager.RTC_WAKEUP, then, sender);
-            Log.d(PoliteDroid.TAG, "update alarm set in: " + Long.toString((then - now) / 1000 / 60));
-        }
+        PendingIntent sender = PendingIntent.getBroadcast(context, 0, updateIntent, PendingIntent.FLAG_CANCEL_CURRENT|PendingIntent.FLAG_ONE_SHOT);
+        alarm.set(AlarmManager.RTC_WAKEUP, then, sender);
+        Log.d(PoliteDroid.TAG, "update alarm set in: " + Long.toString((then - now) / 1000 / 60));
+
         Log.d(PoliteDroid.TAG, "Update done");
     }
 

@@ -14,8 +14,8 @@ android {
 
     defaultConfig {
         applicationId 'com.politedroid'
-        minSdkVersion 3
-        targetSdkVersion 10
+        minSdkVersion 14
+        targetSdkVersion 21
     }
 
     buildTypes {

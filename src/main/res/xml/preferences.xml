@@ -28,12 +28,5 @@
                 android:title="@string/options_vibrate"
                 android:summary="@string/options_vibrate_summary"
                 android:defaultValue="true"/>
-        <ListPreference
-                android:key="options_update_interval"
-                android:title="@string/options_update_interval"
-                android:summary="@string/options_update_interval_summary"
-                android:entries="@array/update_intervals"
-                android:entryValues="@array/update_interval_values"
-                android:defaultValue="900000"/>
     </PreferenceCategory>
 </PreferenceScreen>
