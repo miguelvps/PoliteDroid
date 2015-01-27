@@ -28,11 +28,11 @@ import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.preference.ListPreferenceMultiSelect;
 import android.preference.PreferenceManager;
+import android.provider.CalendarContract.Instances;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.politedroid.calendar.Event;
-import com.politedroid.calendar.EventCursor;
 
 public class Update extends BroadcastReceiver {
 
@@ -61,48 +61,41 @@ public class Update extends BroadcastReceiver {
             Log.d(PoliteDroid.TAG, "filtering some calendars...");
         }
         if (!sp.getBoolean("options_events_all_day", false)) {
-            filter += " and " + Event.ALL_DAY + " = 0";
+            filter += " and " + Instances.ALL_DAY + " = 0";
             Log.d(PoliteDroid.TAG, "filtering all day events...");
         }
         if (sp.getBoolean("options_events_busy", false)) {
-            filter += " and " + Event.TRANSPARENCY + " = 0";
+            filter += " and " + Instances.AVAILABILITY + " <> " + Instances.AVAILABILITY_FREE;
             Log.d(PoliteDroid.TAG, "filtering only busy events...");
         }
 
         // mute | unmute
         String selection = "end > " + now + filter;
-        EventCursor events = Event.getEvents(context, now, then, selection, "begin asc");
-        if (events != null && events.moveToNext()) {
-            Event event = events.getEvent();
-            if (event.mBegin <= now) {
-                // mute
-                int ringerMode = audio.getRingerMode();
-                boolean vibrate = sp.getBoolean("options_vibrate", false);
-                int options_ringer_mode = vibrate ? AudioManager.RINGER_MODE_VIBRATE : AudioManager.RINGER_MODE_SILENT;
+        Event event = Event.getEvent(context, now, then, selection, null, "begin asc");
+        if (event != null && event.mBegin <= now) {
+            // mute
+            int ringerMode = audio.getRingerMode();
+            boolean vibrate = sp.getBoolean("options_vibrate", false);
+            int options_ringer_mode = vibrate ? AudioManager.RINGER_MODE_VIBRATE : AudioManager.RINGER_MODE_SILENT;
 
-                if (!sp.getBoolean("isMute", false)) {
-                    sp.edit().putInt("ringer_mode", ringerMode).commit();
-                    audio.setRingerMode(Math.min(ringerMode, options_ringer_mode));
-                    sp.edit().putBoolean("isMute", true).commit();
-                } else if (intent.getBooleanExtra("options_vibrate_changed", false)
-                        && ringerMode != options_ringer_mode) {
-                    audio.setRingerMode(Math.min(options_ringer_mode,
-                                                 sp.getInt("ringer_mode", AudioManager.RINGER_MODE_VIBRATE)));
-                }
-                then = event.mEnd;
-            } else {
-                // unmute
-                if (sp.getBoolean("isMute", false)) {
-                    audio.setRingerMode(sp.getInt("ringer_mode", AudioManager.RINGER_MODE_NORMAL));
-                    sp.edit().putBoolean("isMute", false).commit();
-                }
-                then = event.mBegin;
+            if (!sp.getBoolean("isMute", false)) {
+                sp.edit().putInt("ringer_mode", ringerMode).commit();
+                audio.setRingerMode(Math.min(ringerMode, options_ringer_mode));
+                sp.edit().putBoolean("isMute", true).commit();
+            } else if (intent.getBooleanExtra("options_vibrate_changed", false)
+                    && ringerMode != options_ringer_mode) {
+                audio.setRingerMode(Math.min(options_ringer_mode,
+                                             sp.getInt("ringer_mode", AudioManager.RINGER_MODE_VIBRATE)));
             }
+            then = event.mEnd;
         } else {
             // unmute
             if (sp.getBoolean("isMute", false)) {
                 audio.setRingerMode(sp.getInt("ringer_mode", AudioManager.RINGER_MODE_NORMAL));
                 sp.edit().putBoolean("isMute", false).commit();
+            }
+            if (event != null) {
+                then = event.mBegin;
             }
         }
 

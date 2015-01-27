@@ -26,18 +26,13 @@ public class EventCursor extends CursorWrapper {
         super(cursor);
     }
 
-    @Override
-    protected void finalize() throws Throwable {
-        super.finalize();
-        this.close();
-    }
-
     public Event getEvent() {
-        return new Event(getLong(getColumnIndex(Event.ID)),
-                         getLong(getColumnIndex(Event.CALENDAR_ID)),
-                         getLong(getColumnIndex(Event.BEGIN)),
-                         getLong(getColumnIndex(Event.END)),
-                         getInt(getColumnIndex(Event.ALL_DAY)) != 0,
-                         getInt(getColumnIndex(Event.TRANSPARENCY)) == 0);
+        return new Event(getLong(Event.PROJECTION_ID_INDEX),
+                         getLong(Event.PROJECTION_CALENDAR_ID_INDEX),
+                         getString(Event.PROJECTION_TITLE_INDEX),
+                         getLong(Event.PROJECTION_BEGIN_INDEX),
+                         getLong(Event.PROJECTION_END_INDEX),
+                         getInt(Event.PROJECTION_ALL_DAY_INDEX) != 0,
+                         getInt(Event.PROJECTION_AVAILABILITY_INDEX));
     }
 }
