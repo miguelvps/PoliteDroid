@@ -17,6 +17,7 @@
 
 package com.politedroid;
 
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -25,66 +26,75 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
+import android.preference.PreferenceFragment;
 import android.util.Log;
 
-public class Preferences extends PreferenceActivity implements OnSharedPreferenceChangeListener {
+public class Preferences extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d(PoliteDroid.TAG, "Preferences.onCreate()");
         super.onCreate(savedInstanceState);
 
-        addPreferencesFromResource(R.xml.preferences);
+        getFragmentManager().beginTransaction().replace(android.R.id.content, new Fragment()).commit();
     }
 
-    @Override
-    protected void onResume() {
-        Log.d(PoliteDroid.TAG, "Preferences.onResume()");
-        super.onResume();
+    public static class Fragment extends PreferenceFragment implements OnSharedPreferenceChangeListener {
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            Log.d(PoliteDroid.TAG, "Preferences.Fragment.onCreate()");
+            super.onCreate(savedInstanceState);
 
-        getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
-    }
-
-    @Override
-    protected void onPause() {
-        Log.d(PoliteDroid.TAG, "Preferences.onPause()");
-        super.onPause();
-
-        getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
-    }
-
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        Log.d(PoliteDroid.TAG, "Preferences.onSharedPreferenceChanged(" + key + ")");
-        if (key.startsWith("options")) {
-            if (sharedPreferences.getBoolean("options_enabled", false)) {
-                // start alarm
-                Intent intent = new Intent(getApplicationContext(), Update.class);
-                if (key.equals("options_vibrate")) {
-                    intent.putExtra("options_vibrate_changed", true);
-                }
-                sendBroadcast(intent);
-
-                Log.d(PoliteDroid.TAG, "enabled");
-            }
-            else if (key.equals("options_enabled")) {
-                // unmute if self muted
-                if (sharedPreferences.getBoolean("isMute", false)) {
-                    AudioManager audio = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
-                    audio.setRingerMode(sharedPreferences.getInt("ringer_mode", AudioManager.RINGER_MODE_NORMAL));
-                    sharedPreferences.edit().putBoolean("isMute", false).commit();
-                }
-
-                // stop alarm
-                Intent intent = new Intent(getApplicationContext(), Update.class);
-                PendingIntent sender = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
-                ((AlarmManager)getSystemService(ALARM_SERVICE)).cancel(sender);
-                sender.cancel();
-
-                Log.d(PoliteDroid.TAG, "disabled");
-            }
+            addPreferencesFromResource(R.xml.preferences);
         }
 
+        @Override
+        public void onResume() {
+            Log.d(PoliteDroid.TAG, "Preferences.Fragment.onResume()");
+            super.onResume();
+
+            getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+        }
+
+        @Override
+        public void onPause() {
+            Log.d(PoliteDroid.TAG, "Preferences.Fragment.onPause()");
+            super.onPause();
+
+            getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+        }
+
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+            Log.d(PoliteDroid.TAG, "Preferences.Fragment.onSharedPreferenceChanged(" + key + ")");
+            if (key.startsWith("options")) {
+                if (sharedPreferences.getBoolean("options_enabled", false)) {
+                    // start alarm
+                    Intent intent = new Intent(getActivity(), Update.class);
+                    if (key.equals("options_vibrate")) {
+                        intent.putExtra("options_vibrate_changed", true);
+                    }
+                    getActivity().sendBroadcast(intent);
+
+                    Log.d(PoliteDroid.TAG, "enabled");
+                }
+                else if (key.equals("options_enabled")) {
+                    // unmute if self muted
+                    if (sharedPreferences.getBoolean("isMute", false)) {
+                        AudioManager audio = (AudioManager)getActivity().getSystemService(Context.AUDIO_SERVICE);
+                        audio.setRingerMode(sharedPreferences.getInt("ringer_mode", AudioManager.RINGER_MODE_NORMAL));
+                        sharedPreferences.edit().putBoolean("isMute", false).commit();
+                    }
+
+                    // stop alarm
+                    Intent intent = new Intent(getActivity(), Update.class);
+                    PendingIntent sender = PendingIntent.getBroadcast(getActivity(), 0, intent, 0);
+                    ((AlarmManager)getActivity().getSystemService(ALARM_SERVICE)).cancel(sender);
+                    sender.cancel();
+
+                    Log.d(PoliteDroid.TAG, "disabled");
+                }
+            }
+
+        }
     }
 
 }
