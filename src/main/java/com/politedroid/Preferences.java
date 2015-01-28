@@ -20,10 +20,12 @@ package com.politedroid;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
@@ -66,7 +68,14 @@ public class Preferences extends Activity {
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
             Log.d(PoliteDroid.TAG, "Preferences.Fragment.onSharedPreferenceChanged(" + key + ")");
             if (key.startsWith("options")) {
+                PackageManager packageManager = getActivity().getPackageManager();
+                ComponentName componentName = new ComponentName(getActivity(), Update.class);
+
                 if (sharedPreferences.getBoolean("options_enabled", false)) {
+                    packageManager.setComponentEnabledSetting(componentName,
+                            PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                            PackageManager.DONT_KILL_APP);
+
                     // start alarm
                     Intent intent = new Intent(getActivity(), Update.class);
                     if (key.equals("options_vibrate")) {
@@ -77,18 +86,22 @@ public class Preferences extends Activity {
                     Log.d(PoliteDroid.TAG, "enabled");
                 }
                 else if (key.equals("options_enabled")) {
-                    // unmute if self muted
-                    if (sharedPreferences.getBoolean("isMute", false)) {
-                        AudioManager audio = (AudioManager)getActivity().getSystemService(Context.AUDIO_SERVICE);
-                        audio.setRingerMode(sharedPreferences.getInt("ringer_mode", AudioManager.RINGER_MODE_NORMAL));
-                        sharedPreferences.edit().putBoolean("isMute", false).apply();
-                    }
+                    packageManager.setComponentEnabledSetting(componentName,
+                            PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                            PackageManager.DONT_KILL_APP);
 
                     // stop alarm
                     Intent intent = new Intent(getActivity(), Update.class);
                     PendingIntent sender = PendingIntent.getBroadcast(getActivity(), 0, intent, 0);
                     ((AlarmManager)getActivity().getSystemService(ALARM_SERVICE)).cancel(sender);
                     sender.cancel();
+
+                    // unmute if self muted
+                    if (sharedPreferences.getBoolean("isMute", false)) {
+                        AudioManager audio = (AudioManager)getActivity().getSystemService(Context.AUDIO_SERVICE);
+                        audio.setRingerMode(sharedPreferences.getInt("ringer_mode", AudioManager.RINGER_MODE_NORMAL));
+                        sharedPreferences.edit().putBoolean("isMute", false).apply();
+                    }
 
                     Log.d(PoliteDroid.TAG, "disabled");
                 }
