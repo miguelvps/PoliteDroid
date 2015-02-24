@@ -79,9 +79,9 @@ public class Update extends BroadcastReceiver {
             int options_ringer_mode = vibrate ? AudioManager.RINGER_MODE_VIBRATE : AudioManager.RINGER_MODE_SILENT;
 
             if (!sp.getBoolean("isMute", false)) {
-                sp.edit().putInt("ringer_mode", ringerMode).commit();
+                sp.edit().putInt("ringer_mode", ringerMode).apply();
                 audio.setRingerMode(Math.min(ringerMode, options_ringer_mode));
-                sp.edit().putBoolean("isMute", true).commit();
+                sp.edit().putBoolean("isMute", true).apply();
             } else if (intent.getBooleanExtra("options_vibrate_changed", false)
                     && ringerMode != options_ringer_mode) {
                 audio.setRingerMode(Math.min(options_ringer_mode,
@@ -92,7 +92,7 @@ public class Update extends BroadcastReceiver {
             // unmute
             if (sp.getBoolean("isMute", false)) {
                 audio.setRingerMode(sp.getInt("ringer_mode", AudioManager.RINGER_MODE_NORMAL));
-                sp.edit().putBoolean("isMute", false).commit();
+                sp.edit().putBoolean("isMute", false).apply();
             }
             if (event != null) {
                 then = event.mBegin;

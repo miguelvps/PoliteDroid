@@ -81,7 +81,7 @@ public class Preferences extends Activity {
                     if (sharedPreferences.getBoolean("isMute", false)) {
                         AudioManager audio = (AudioManager)getActivity().getSystemService(Context.AUDIO_SERVICE);
                         audio.setRingerMode(sharedPreferences.getInt("ringer_mode", AudioManager.RINGER_MODE_NORMAL));
-                        sharedPreferences.edit().putBoolean("isMute", false).commit();
+                        sharedPreferences.edit().putBoolean("isMute", false).apply();
                     }
 
                     // stop alarm
